@@ -197,16 +197,18 @@ and a wider disc is the same wider disc every frame. Reverted with `git
 checkout -- source/Shaders.cpp`; `git diff --stat -- source` read empty, and
 after the rebuild `--rotation` passed again.
 
-Then `tools/mutate.sh`, which builds each mutant in its own copy of the tree
-and never touches the working tree: **5 of 5 behaved as expected** — the same
-radius mutant (`--rotation`, 5 assertions: the four and the check's own
-summary); `c >= 0.0` → `c <= 0.0` choosing the face, a disc showing the side
-it is not on (`--wipe`); the means shader's cell centre `0.5` → `1.5` in y, each
-disc's target taken from the cell below (`--changes`); `2.0 * kPi` → `3.0 *
-kPi` in the rebound depth (`--rotation`, 3 assertions — only the black→colour
-swing measures the rebound, since colour→black rebounds on the black face);
-and a whitespace-only edit to `Disc.cpp`, which builds and passes, the control
-for the controls.
+Then `tools/mutate.sh` (re-run on 2026-09-25 after the clock variant joined
+`--wipe`), which builds each mutant in its own copy of the tree and never
+touches the working tree: **5 of 5 behaved as expected**. The counts are its
+`grep -c FAIL`, which includes the check's own summary line: the same radius
+mutant (`--rotation`, 4 assertions + 1); `c >= 0.0` → `c <= 0.0` choosing the
+face, so a disc shows the side it is not on (`--wipe`, all 6 + 1); the means
+shader's cell centre `0.5` → `1.5` in y, each disc's target taken from the
+cell below (`--changes`, 4 + 1); `2.0 * kPi` → `3.0 * kPi` in the rebound
+depth (`--rotation`, 2 + 1 — only the black→colour swing measures a rebound,
+since colour→black rebounds on the black face); and a whitespace-only edit to
+`Disc.cpp`, which builds and passes `--rotation`, the control for the
+controls.
 
 ---
 
