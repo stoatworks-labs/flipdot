@@ -102,7 +102,7 @@ FlipdotPlugin::FlipdotPlugin()
 	mParams[ PT_LATE ]      = LateToParam( 0.02 );
 
 	mParams[ PT_DITHER ]    = static_cast< float >( kDitherBayer );
-	mParams[ PT_THRESHOLD ] = 0.5f;
+	mParams[ PT_THRESHOLD ] = 0.25f;
 	mParams[ PT_LIGHT ]     = 0.3f;//24 degrees from the left
 	mParams[ PT_MIX ]       = 1.0f;
 

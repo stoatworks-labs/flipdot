@@ -519,7 +519,7 @@ void plainSign( Session& s, int columns, int rows )
 
 /// A disc's side, off its centre pixel. The colour face's red is at least
 /// 0.3 x 255 = 76 under any light (the ambient floor); the black face's is
-/// at most 0.06 x 255 = 15. 50 separates them with room either side.
+/// at most 0.08 x 255 = 20. 50 separates them with room either side.
 constexpr int kSideThreshold = 50;
 
 bool sideAt( const Image& img, const Grid& g, int c, int r )

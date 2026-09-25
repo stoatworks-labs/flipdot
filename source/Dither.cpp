@@ -17,6 +17,13 @@ constexpr int kBayer[ 4 ][ 4 ] = {
 };
 } // namespace
 
+double ToneCurve( double luma, double threshold )
+{
+	const double t = std::min( std::max( threshold, 0.001 ), 0.999 );
+	const double v = std::min( std::max( luma, 0.0 ), 1.0 );
+	return v < t ? 0.5 * v / t : 0.5 + 0.5 * ( v - t ) / ( 1.0 - t );
+}
+
 void DitherGrid( const std::vector< float >& luma, int columns, int rows, int mode, float threshold,
                  std::vector< uint8_t >& bits )
 {
@@ -24,6 +31,7 @@ void DitherGrid( const std::vector< float >& luma, int columns, int rows, int mo
 	bits.assign( n, 0 );
 	if( luma.size() < n )
 		return;
+	const double tth = static_cast< double >( threshold );
 
 	switch( mode )
 	{
@@ -31,9 +39,9 @@ void DitherGrid( const std::vector< float >& luma, int columns, int rows, int mo
 		for( int r = 0; r < rows; ++r )
 			for( int c = 0; c < columns; ++c )
 			{
-				const float t      = threshold + ( static_cast< float >( kBayer[ r & 3 ][ c & 3 ] ) + 0.5f ) / 16.0f - 0.5f;
+				const double level = ( static_cast< double >( kBayer[ r & 3 ][ c & 3 ] ) + 0.5 ) / 16.0;
 				const size_t i     = static_cast< size_t >( r ) * columns + c;
-				bits[ i ]          = luma[ i ] >= t ? 1 : 0;
+				bits[ i ]          = ToneCurve( static_cast< double >( luma[ i ] ), tth ) >= level ? 1 : 0;
 			}
 		break;
 
@@ -41,7 +49,6 @@ void DitherGrid( const std::vector< float >& luma, int columns, int rows, int mo
 	{
 		// Two rows of error, in double so a long row cannot drift.
 		std::vector< double > here( static_cast< size_t >( columns ) + 2, 0.0 ), below( static_cast< size_t >( columns ) + 2, 0.0 );
-		const double bias = 0.5 - static_cast< double >( threshold );
 		for( int r = 0; r < rows; ++r )
 		{
 			const bool rightward = ( r & 1 ) == 0;
@@ -51,7 +58,7 @@ void DitherGrid( const std::vector< float >& luma, int columns, int rows, int mo
 				const int c       = rightward ? k : columns - 1 - k;
 				const int dir     = rightward ? 1 : -1;
 				const size_t i    = static_cast< size_t >( r ) * columns + c;
-				const double v    = static_cast< double >( luma[ i ] ) + bias + here[ static_cast< size_t >( c + 1 ) ];
+				const double v    = ToneCurve( static_cast< double >( luma[ i ] ), tth ) + here[ static_cast< size_t >( c + 1 ) ];
 				const uint8_t bit = v >= 0.5 ? 1 : 0;
 				bits[ i ]         = bit;
 				const double err  = v - static_cast< double >( bit );
@@ -69,7 +76,7 @@ void DitherGrid( const std::vector< float >& luma, int columns, int rows, int mo
 	case kDitherThreshold:
 	default:
 		for( size_t i = 0; i < n; ++i )
-			bits[ i ] = luma[ i ] >= threshold ? 1 : 0;
+			bits[ i ] = ToneCurve( static_cast< double >( luma[ i ] ), tth ) >= 0.5 ? 1 : 0;
 		break;
 	}
 }

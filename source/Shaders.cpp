@@ -106,7 +106,7 @@ out vec4 fragColor;
 const float kAmbient = 0.30;
 const vec3 kSignFace = vec3( 0.035 );  //the sign's matte black front
 const vec3 kHole = vec3( 0.012 );      //the recess each disc sits in
-const vec3 kBlackFace = vec3( 0.060 ); //the disc's black side
+const vec3 kBlackFace = vec3( 0.080 ); //the disc's black side
 const vec3 kRimPaint = vec3( 0.120 );  //the disc's edge
 
 //Signed distance in pixels to an ellipse of semi-axes a, to first order.
