@@ -1503,6 +1503,10 @@ struct Cues
 		Track track;
 	};
 	std::vector< Bound > bound;
+	///A synthetic spectrum for the video: `frame  Spectrum  level` writes the
+	///level into all 64 bins, stepping (no ramp). Not a plugin parameter and
+	///not audio: the Audio buffer the host would fill, filled by the cue sheet.
+	Track spectrum;
 
 	bool bind( Session& s, const RunOptions& o, std::string& error )
 	{
@@ -1528,6 +1532,11 @@ struct Cues
 			return false;
 		for( const auto& entry : tracks )
 		{
+			if( entry.first == "Spectrum" )
+			{
+				spectrum = entry.second;
+				continue;
+			}
 			const auto found = byName.find( entry.first );
 			if( found == byName.end() )
 			{
@@ -1543,6 +1552,8 @@ struct Cues
 
 	void apply( Session& s, int frame )
 	{
+		if( !spectrum.empty() )
+			s.setAudio( valueAt( spectrum, frame, true ) );
 		for( const Bound& b : bound )
 		{
 			if( s.plugin.GetParamType( b.id ) == FF_TYPE_EVENT )
@@ -1695,7 +1706,7 @@ void usage()
 		"  --set \"Name=V\"    set a parameter by its display name (options by index)\n"
 		"  --audio LEVEL     write LEVEL into every spectrum bin\n"
 		"  --drift PX        move the test card PX pixels a frame (for --out)\n"
-		"  --script PATH     cues: 'frame Parameter Name value'\n"
+		"  --script PATH     cues: 'frame Parameter Name value' ('Spectrum' fills every bin, stepping)\n"
 		"  --list | --names\n"
 		"  --wipe | --changes | --bistable | --stuck | --rotation | --resize | --prime\n"
 		"                    the checks, at 640x360 and 320x180 (FDTEST_RENDERER=software for the software renderer)\n"
