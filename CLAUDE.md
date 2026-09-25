@@ -90,6 +90,25 @@ parameter list.
   page, Source on GitHub, Support the work) and `Flipdot.cpp`'s
   `static_assert` holds `PT_ABOUT_*` to `about::kParamCount`.
 
+## Browser demo
+- `demo/` is the page at <https://flipdot-demo.stoatworks-labs.com/>: the
+  shared kit vendored into `demo/vendor/` by
+  `stoatworks-backend/resolume-demo/sync.sh` (never edit `vendor/`),
+  `demo/plugin.js` (the GL passes, the controls), `demo/sign.js` (the CPU half,
+  ported).
+- After touching `source/Shaders.cpp`: `python3 demo/tools/splice_shaders.py`,
+  then `python3 demo/tools/check_shaders.py`. Never edit the shader block in
+  plugin.js by hand.
+- After touching Sign, Disc, Dither, Controls, Onset, or Flipdot.cpp's
+  constructor, decideUpdate, uploadAngles or ProcessOpenGL: change
+  `demo/sign.js` to match and run `demo/tools/check_port.sh` (needs node and
+  c++). It cuts text out of Flipdot.h/.cpp by marker; a moved marker fails it.
+- Deploy: a push to `main` runs `.github/workflows/deploy.yml`; by hand,
+  `cf-run npx wrangler deploy`. The host is a Worker ROUTE on a proxied
+  `AAAA 100::` DNS record (the zone's custom domains are full); see
+  `wrangler.toml`. Verify by content:
+  `curl -s 'https://flipdot-demo.stoatworks-labs.com/?cb=1' | grep -o '<title>[^<]*'`.
+
 ## Not done yet
 - Never loaded into Resolume on macOS; on Windows the Arena gate passed 9 of 9
   (software rendering). No real audio has reached it in a host.

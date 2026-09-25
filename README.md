@@ -172,6 +172,20 @@ Not verified, and not pretended:
   frame in Continuous.
 - No presets, no OpenFX port.
 
+## Browser demo
+
+**<https://flipdot-demo.stoatworks-labs.com/>** — try it without Resolume. It
+is not the plugin: the four shaders are the plugin's own GLSL in WebGL2,
+copied unedited from `source/Shaders.cpp` (held to it by
+`demo/tools/check_shaders.py`), and the CPU half — the sign, the driver, the
+disc's profile, the dither, the control laws and the frame sequence — is a
+**port** to JavaScript in `demo/sign.js`. `demo/tools/check_port.sh` builds
+the plugin's own C++ and compares the port with it frame by frame; on its
+cases they agree exactly. No audio reaches a browser, so Onset mode never
+fires there; nothing on the page is a performance claim. Every other gap is
+listed at the foot of the page. `tools/verify.sh` runs both checks; a push to
+`main` redeploys the page (`.github/workflows/deploy.yml`).
+
 ## Installing
 
 Build (below) and `cmake --install build`, which puts `Flipdot.bundle` into

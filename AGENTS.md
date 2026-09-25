@@ -392,6 +392,53 @@ quarter second, not a whole pass.
 
 ---
 
+## The browser demo (`demo/`)
+
+<https://flipdot-demo.stoatworks-labs.com/>, built 2026-09-25 from the fleet
+kit (`stoatworks-backend/resolume-demo`). **Two halves, not equally
+faithful:**
+
+- **The shaders are the plugin's.** `demo/plugin.js` carries the four
+  `Shaders.cpp` constants, written by `demo/tools/splice_shaders.py`;
+  `demo/tools/check_shaders.py` (in `verify.sh`) fails on one character's
+  drift. WebGL2 runs copy → means (R32F, read back) → board, as the plugin
+  does.
+- **The CPU half is a PORT**, `demo/sign.js`: Sign, Disc, Dither, Controls,
+  Onset, and ProcessOpenGL's sequence with decideUpdate and uploadAngles,
+  `Math.fround` wherever the C++ holds a float. `demo/tools/check_port.sh`
+  (in `verify.sh`) compiles refsign.cpp against Sign/Disc/Dither/Controls/
+  Onset/Clock.cpp unchanged plus text **cut** from Flipdot.h/.cpp at run time
+  (the constructor, decideUpdate, uploadAngles, ProcessOpenGL,
+  SetFloatParameter, SetTime), with GL stood in for by
+  `demo/tools/stub/FFGLSDK.h`. Measured 2026-09-25: all 20 declarations
+  (name, type, group, default, range, elements) identical to the page's; 22
+  laws at 1,012 host values, the profile at 4,001 points for nine
+  restitutions, geometryFor at 1,440 sizes identical; **799 frames** over
+  eight cases (defaults, the dither edges, Continuous→Manual with Refresh
+  All, Interval with stalls and a backwards clock, regrids with Stuck and
+  Late at their maximum, 192×108 to 4×2 and a picture unlike the viewport,
+  the range ends, Onset on silence) identical in every angle, target bit,
+  cos/sin float and uniform. Built a second time with the Release flags
+  (`-O3`, clang's default FP contraction, arm64): **0** frames differ. Its
+  own mutants: the rebound cut moved by a hair, the frame clamp at 0.26,
+  Interval's first-frame fire removed, the pending pass dropped — all caught;
+  the swing's 1e-6 s floor raised to 1e-3 s survives, and is equivalent (Flip
+  Time's minimum is 5 ms).
+- **What it cannot see:** the means themselves (the script's, not a GPU's),
+  the board pass, whether plugin.js's GL calls match the plugin's, and the
+  browser's own `Math.pow`/`cos`/`sin` (it ran under Node).
+- **Gaps the page states:** no audio (Onset never fires; nothing fakes one);
+  Update Now is a button; Columns/Rows are dropdowns; the read-back is
+  RGBA/FLOAT (WebGL2's guarantee) keeping red; the browser makes its own mip
+  chain; the clock is declared seconds, 0.25 s clamp ported; no retrigger;
+  MaxUV (1, 1); no alpha clip (straight vs premultiplied is open); **no
+  performance claim** (the read-back stall inside Resolume is unmeasured); no
+  About block.
+- **Deploy:** a Worker route on a proxied `AAAA 100::` record made through the
+  API (the zone's 100 Workers custom domains are used up); a push to `main`
+  deploys (`deploy.yml`, repo secret `CLOUDFLARE_API_TOKEN`, variable
+  `CLOUDFLARE_ACCOUNT_ID`) and checks the live `<head>`.
+
 ## What is genuinely verified, and what is assumed
 
 **Verified, by measurement on this machine (M4 Max, macOS 26.4.1),
