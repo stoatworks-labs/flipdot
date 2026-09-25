@@ -57,6 +57,7 @@ public:
 		Sign::Debug sign;
 		bool clearOnResize = false;///< the photofinish bug: the sign wiped on a picture resize
 		bool noPrime       = false;///< the onset detector unprimed on frame one
+		bool floatClock    = false;///< the frame delta taken between two floats of the host's clock
 	};
 	void SetDebugForTest( const Debug& debug );
 

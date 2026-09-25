@@ -49,7 +49,7 @@ open(path, "w").write(text.replace(a, b))
 PY
 
 	if ! cmake -S "$tree" -B "$tree/build" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 >/dev/null 2>&1 \
-	   || ! cmake --build "$tree/build" --target fdtest -j"$(sysctl -n hw.ncpu)" >/dev/null 2>&1; then
+	   || ! cmake --build "$tree/build" --target fdtest -j4 >/dev/null 2>&1; then
 		echo "  (did not build: $meaning)"
 		missed=$(( missed + 1 ))
 		continue

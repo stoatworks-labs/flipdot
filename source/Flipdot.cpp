@@ -335,10 +335,15 @@ FFResult FlipdotPlugin::ProcessOpenGL( ProcessOpenGLStruct* pGL )
 	// in double, so Resolume's ~499 million ms clock never reaches a float.
 	//---------------------------------------------------------------------
 	mClock.Tick( mHostTime, mHostTimeSeen );
+	diag::stateChanged( "clock", std::string( "host clock unit: " ) + mClock.Unit() );
 	const double now = mClock.Seconds();
 	double dt        = 0.0;
 	if( mLastSeconds >= 0.0 )
-		dt = std::min( std::max( now - mLastSeconds, 0.0 ), kMaxFrameDelta );
+	{
+		const double delta = mDebug.floatClock ? static_cast< double >( static_cast< float >( now ) - static_cast< float >( mLastSeconds ) )
+		                                       : now - mLastSeconds;
+		dt = std::min( std::max( delta, 0.0 ), kMaxFrameDelta );
+	}
 	mLastSeconds = now;
 
 	//---------------------------------------------------------------------

@@ -325,10 +325,15 @@ struct Session
 	double fps       = 60.0;
 	int frameIndex   = 0;
 	float bins[ kAudioBins ] = {};
+	/// >= 0: drive the clock the way Resolume does, in milliseconds from here.
+	double clockOffsetMs = -1.0;
 
 	bool init()
 	{
-		plugin.ForceSecondsClock();
+		if( clockOffsetMs >= 0.0 )
+			plugin.ForceMillisecondsClock();
+		else
+			plugin.ForceSecondsClock();
 		FFGLViewportStruct vp = {};
 		vp.width              = 16;
 		vp.height             = 16;
@@ -442,7 +447,10 @@ struct Session
 	{
 		for( int i = 0; i < kAudioBins; ++i )
 			plugin.SetParamElementValue( PT_AUDIO, static_cast< unsigned >( i ), bins[ i ] );
-		plugin.SetTime( static_cast< double >( frameIndex ) / fps );
+		if( clockOffsetMs >= 0.0 )
+			plugin.SetTime( clockOffsetMs + static_cast< double >( frameIndex ) * 1000.0 / fps );
+		else
+			plugin.SetTime( static_cast< double >( frameIndex ) / fps );
 		++frameIndex;
 
 		FFGLTextureStruct in = {};
@@ -575,6 +583,10 @@ using Debug = FlipdotPlugin::Debug;
 // so the landing frame is ceil( 2.4 L + 6.5 ) with nothing to round, and the
 // float Scan Rate and Flip Time (a few parts in 10^7) cannot move it.
 //
+// It runs three ways: column by column, row by row, and column by column
+// with the clock in milliseconds from 499,000,000 (what Resolume was measured
+// sending), where only a delta taken in double survives.
+//
 // "Completes" is read off the picture: the first frame from which the disc's
 // cell is bit-identical to the last frame of the run. With no rebound the
 // disc is exactly at the stop from the frame it lands. The frame before,
@@ -587,12 +599,18 @@ using Debug = FlipdotPlugin::Debug;
 void checkWipe( const Debug& debug )
 {
 	for( const Raster& raster : kRasters )
-		for( int scanRows = 0; scanRows < 2; ++scanRows )
+		for( int variant = 0; variant < 3; ++variant )
 		{
+			//0 column by column, 1 row by row, 2 column by column on Resolume's
+			//clock: milliseconds, from 499,000,000, where a float resolves
+			//32 ms and so could not tell one frame from the next.
+			const int scanRows = variant == 1 ? 1 : 0;
 			constexpr int columns = 16, rows = 9;
 			constexpr double rate = 25.0, flipFrames = 6.5;
 			const Grid g { raster.width, raster.height, columns, rows };
 			Session s;
+			if( variant == 2 )
+				s.clockOffsetMs = 499.0e6;
 			s.plugin.SetDebugForTest( debug );
 			if( !s.init() )
 				return;
@@ -642,7 +660,8 @@ void checkWipe( const Debug& debug )
 				}
 			report( wrong == 0 && notYellow == 0,
 			        "%dx%d, %s: every disc of line L completed on frame ceil(2.4 L + 6.5) exactly (%d of %d wrong), all yellow (%d not)",
-			        raster.width, raster.height, scanRows ? "row by row" : "column by column", wrong, columns * rows, notYellow );
+			        raster.width, raster.height, variant == 2 ? "column by column, clock at 499,000,000 ms" : scanRows ? "row by row" : "column by column",
+			        wrong, columns * rows, notYellow );
 		}
 }
 
@@ -1218,9 +1237,12 @@ int runNegative()
 	regrid.sign.clearOnRegrid = true;
 	Debug unprimed;
 	unprimed.noPrime = true;
+	Debug floatClock;
+	floatClock.floatClock = true;
 
 	const Case cases[] = {
 		{ "--wipe with the whole sign pulsed at once (no scan)", noScan, checkWipe },
+		{ "--wipe with the frame delta taken between floats of the host clock", floatClock, checkWipe },
 		{ "--changes with every disc pulsed in Only Changes", pulseAll, checkChanges },
 		{ "--bistable with every disc pulsed in Only Changes", pulseAll, checkBistable },
 		{ "--stuck with stuck discs obeying their coils", ignoreStuck, checkStuck },
@@ -1348,7 +1370,7 @@ int runBench()
 	};
 	const Size sizes[] = { { "1280x720 ", 1280, 720 }, { "1920x1080", 1920, 1080 }, { "3840x2160", 3840, 2160 } };
 	std::printf( "60 frames each after a 20-frame warm-up, glFinish both sides, the largest sign the controls allow (%d x %d), "
-	             "the defaults otherwise (Continuous: a read-back and a dither every frame), the test card drifting a pixel a frame.\n\n",
+	             "the defaults otherwise (Continuous: a read-back and a dither every frame), the test card and its red inverted alternating every frame, so the driver always has discs to pulse.\n\n",
 	             kColumnsMax, kRowsMax );
 	std::printf( "resolution   ms/frame   %% of a 60 fps frame\n" );
 	for( const Size& size : sizes )
