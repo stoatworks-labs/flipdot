@@ -130,8 +130,10 @@ Verified, by measurement on this machine (Apple Silicon, macOS 26.4), with
 - **Cost**, `fdtest --bench` (60 frames after a 20-frame warm-up, glFinish
   both sides, the largest sign the controls allow, 192×108, Continuous with a
   new picture every frame, the universal build, on a machine running other
-  builds): **1.21 ms at 1280×720, 1.93 ms at 1920×1080, 3.04 ms at
-  3840×2160**. A read-back of the grid of means stalls the GPU once a frame.
+  builds): **1.12–1.21 ms at 1280×720, 1.93–2.19 ms at 1920×1080,
+  3.04–3.58 ms at 3840×2160**, the range of the two `verify.sh` runs of
+  2026-09-25 (load average 3 to 6). A read-back of the grid of means stalls
+  the GPU once a frame.
 - The bundle is universal (`lipo`: x86_64 arm64), exports `plugMain`, ad-hoc
   signs, and probes under oxbow as **SW Flipdot / FD01 / effect**.
 - **Looked at, not measured:** ten of Resolume's bundled demo clips through

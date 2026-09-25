@@ -293,7 +293,14 @@ a regrid re-maps it (each new disc takes the old disc at the same place).
 **The dither is on the CPU too, after a read-back.** Floyd–Steinberg is
 serial. The means pass writes one R32F texel per disc and `glReadPixels`
 brings them back — a sync stall once a frame in Continuous, only on an update
-otherwise. 3.0 ms a frame at 4K on the largest sign, measured.
+otherwise. 3.0 to 3.6 ms a frame at 4K on the largest sign, measured.
+
+**Continuous lags the clip by up to a sweep, by design.** At the default
+240 lines a second a column is revisited every 0.27 s, so on Bass 003, which
+flashes about twice a second, the sign still shows the last flash in the
+columns the driver has not reached again (21 discs lit 10 frames after the
+clip went black, 2 — the stuck ones — by 40). That is the driver, not stale
+state: a white-then-black test clears to the stuck discs alone.
 
 **The profile is a constant torque to the stop, then damped rebounds.** "Driven
 then damped, with a short rebound": driven all the way (θ = π u²), arriving
