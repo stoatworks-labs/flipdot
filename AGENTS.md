@@ -260,6 +260,22 @@ session started in a `~/Projects` checkout; `git add` from there, even aimed
 at `~/dev/flipdot`, was refused by the hook. `git -C ~/dev/flipdot ...` is
 what works (and is the machine's rule anyway).
 
+**What filming found (2026-09-25, the release video).** (1) Switching
+Update from Continuous to Manual lets the pass in flight finish, at the scan
+rate in force: the video's first cut changed Scan Rate to 30 lines a second
+at the switch, so the old pass was still crawling across the right of the
+sign when Update Now landed 1.5 s later, and those columns took the new
+picture before the new pass reached them. That is the documented "an update
+during a pass latches at once" rule, not a defect; the guide now says it, and
+the cue sheet changes the rate after the old pass has ended. (2) Lit from 80°
+the flat faces fall to ambient plus 0.17 and the sign reads brown; the video
+lights its swing beats from 48° and 60°. (3) Onset needs a picture that
+changes between passes (Beat 001 barely does); the video's Onset beat is
+OrganicMotions_06 under a synthetic spectrum (`fdtest`'s `Spectrum` cue), and
+says so. (4) Refresh All's shiver is measurable on film: in the 2x crop, 3x
+the frame-to-frame change of Only Changes on the same clip (1.1 % against
+0.4 % of pixels a frame).
+
 **zsh's `=word` expansion**, again: `echo =====` as a separator in a one-off
 command failed with "===== not found". verify.sh is bash.
 
@@ -394,14 +410,20 @@ ones as a sparse sign with the stuck dots showing, and nothing floods.
 
 **Assumed, or not done:**
 
-- **Never loaded into Resolume**, on either platform. No Windows build.
+- **Never loaded into Resolume on macOS.** On Windows it has been: the
+  fleet's Arena gate (plugin-bench `arena/expect/flipdot.json`) passed 9 of
+  9 on Resolume Arena 7.27.1, software rendering, 2026-09-25: 26 controls
+  match, 12 live, the seven that act only while discs move (Scan, Scan Rate,
+  Update, Interval, Flip Time, Rebound, Late) annotated `inert` because the
+  gate's still carrier settles the sign once and a settled sign is the same
+  picture at any timing, Audio skipped (no sound device).
 - **No real audio.** The detector's constants are splitflap's, from
   synthetic spectra; the bins' law is unmeasured and nothing assumes one.
 - **Whether Resolume hands over straight or premultiplied alpha.** luma ×
   alpha is right for straight; for premultiplied it darkens a soft edge twice.
-- CI is written (adapted from splitflap) and has never run.
-- No presets, no user guide (`guide = ""` in the provisional About header), no
-  OpenFX port, no browser demo.
+- **The read-back's stall inside Resolume** is unmeasured (a synchronous
+  `glReadPixels` once a frame in Continuous).
+- No presets, no OpenFX port.
 
 ## Open questions
 

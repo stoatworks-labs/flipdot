@@ -17,16 +17,29 @@
 > (`--prime`). Ten negative controls, each of which must fail, all do. Every
 > one of the 19 controls is proven to change the picture at both rasters,
 > and the bundle registers, instantiates and lights pixels under the fleet's
-> oxbow host. **It has never been loaded into Resolume.**
+> oxbow host. On Windows it passes the fleet's Arena gate, 9 of 9, in
+> Resolume Arena 7.27.1 on software rendering. **It has never been loaded
+> into Resolume on macOS.**
 
 The picture on an electromagnetic flip-dot sign. An FFGL **effect** for
 Resolume Arena and Avenue.
 
-![A sign of 48 by 27 discs half way through a change: the left of the sign shows the test card's disc in yellow dots, a column of discs caught edge-on marks the wipe, and the right is still black](docs/hero.png)
+![A sign of 64 by 36 yellow discs half way through a change: on the left the discs have turned to a new pattern, a column of discs is caught edge-on as a thin line, and on the right the sign still holds a sphere it kept from the previous clip](docs/hero.png)
 
-<sub>The harness's test card, 0.5 s into a pass at 60 columns a second with a
-0.3 s swing. Rendered by the plugin's offline harness (`fdtest`), not captured
-from Resolume.</sub>
+<sub>A frame of the project video: Update Now pressed on a Manual sign that kept
+the sphere through a clip cut, the new picture wiping across at 30 columns a
+second. Rendered by the plugin's offline harness (`fdtest --pipe`) from one of
+Resolume's bundled demo clips, not captured from Resolume.</sub>
+
+[![Flipdot — the clip on an electromagnetic flip-dot sign, for Resolume](docs/video-thumb.png)](https://www.youtube.com/watch?v=dSpM8189HsQ)
+
+*[Watch it](https://www.youtube.com/watch?v=dSpM8189HsQ) — 73 seconds at 60 fps:
+the sphere at the defaults, a Manual sign keeping its picture through a clip cut and Update Now
+wiping the new one across, a 32 by 18 sign two times up with half-second swings rebounding off
+their stops and then shivering under Refresh All, a row-by-row pass, Onset under a synthetic
+spectrum, the three dithers on a 128 by 72 sign, an old sign with a fifth of its discs stuck,
+and green and white discs. Rendered through `fdtest --pipe` from Resolume's bundled demo clips,
+not captured from Resolume.*
 
 ## The one idea
 
@@ -84,8 +97,8 @@ threshold of 0.25 (the bundled demo clips are dark: their mean luma runs from
 
 ## Status
 
-**v0.1.0, local, 2026-09-25, and honestly early.** Not released, not
-registered, never pushed.
+**v0.1.0, released 2026-09-25, and honestly early.** A user guide is at
+[stoatworks-labs.com/software/flipdot/guide/](https://stoatworks-labs.com/software/flipdot/guide/).
 
 Verified, by measurement on this machine (Apple Silicon, macOS 26.4), with
 `tools/verify.sh` green:
@@ -130,8 +143,8 @@ Verified, by measurement on this machine (Apple Silicon, macOS 26.4), with
 - **Cost**, `fdtest --bench` (60 frames after a 20-frame warm-up, glFinish
   both sides, the largest sign the controls allow, 192×108, Continuous with a
   new picture every frame, the universal build, on a machine running other
-  builds): **1.12–1.21 ms at 1280×720, 1.93–2.19 ms at 1920×1080,
-  3.04–3.58 ms at 3840×2160**, the range of the two `verify.sh` runs of
+  builds): **1.12–1.27 ms at 1280×720, 1.87–2.28 ms at 1920×1080,
+  3.04–3.77 ms at 3840×2160**, the range of the four `verify.sh` runs of
   2026-09-25 (load average 3 to 6). A read-back of the grid of means stalls
   the GPU once a frame.
 - The bundle is universal (`lipo`: x86_64 arm64), exports `plugMain`, ad-hoc
@@ -147,8 +160,17 @@ Not verified, and not pretended:
   driving the real plugin class in a headless GL context.
 - **No real audio has reached it in a host.** The onset detector is
   splitflap's, with its constants from synthetic spectra.
-- **CI is written and has not run.** No Windows build has been made.
-- No presets, no user guide, no OpenFX port, no browser demo.
+- **Windows, in Resolume, on software rendering only.** A build of this
+  source loads, registers and renders in Resolume Arena 7.27.1 on win-lab
+  (Mesa llvmpipe, no GPU): the fleet's Arena gate, 9 of 9, every parameter
+  as declared, 12 controls (with Arena's Opacity) shown moving the picture.
+  The seven that act only while discs move (Scan, Scan Rate, Update,
+  Interval, Flip Time, Rebound, Late) cannot act on the gate's still carrier,
+  where the sign settles once, and Audio was not tested (no sound device).
+- **What the read-back costs inside Resolume** is unmeasured: the means are
+  read back to the CPU with a synchronous `glReadPixels`, a stall once a
+  frame in Continuous.
+- No presets, no OpenFX port.
 
 ## Installing
 

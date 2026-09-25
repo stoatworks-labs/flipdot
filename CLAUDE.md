@@ -91,9 +91,9 @@ parameter list.
   `static_assert` holds `PT_ABOUT_*` to `about::kParamCount`.
 
 ## Not done yet
-- Never loaded into Resolume; no real audio has reached it in a host. CI is
-  written and has not run.
-- No presets, no OpenFX port, no browser demo, no user guide.
+- Never loaded into Resolume on macOS; on Windows the Arena gate passed 9 of 9
+  (software rendering). No real audio has reached it in a host.
+- No presets, no OpenFX port.
 
 ## Diagnostics
 
