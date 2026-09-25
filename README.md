@@ -41,6 +41,38 @@ spectrum, the three dithers on a 128 by 72 sign, an old sign with a fifth of its
 and green and white discs. Rendered through `fdtest --pipe` from Resolume's bundled demo clips,
 not captured from Resolume.*
 
+<!-- downloads:start -->
+
+## Download
+
+**[v0.1.0](https://github.com/stoatworks-labs/flipdot/releases/tag/v0.1.0)** — prebuilt for macOS and Windows. Pick your platform:
+
+<details>
+<summary><b>macOS</b> — Universal (Apple Silicon + Intel)</summary>
+
+| Build | Download | Size |
+| --- | --- | --- |
+| Universal (Apple Silicon + Intel) · .dmg disk image | [`flipdot-0.1.0-macos-universal.dmg`](https://github.com/stoatworks-labs/flipdot/releases/download/v0.1.0/flipdot-0.1.0-macos-universal.dmg) | 235 KB |
+| Universal (Apple Silicon + Intel) · .zip archive | [`flipdot-macos-universal.zip`](https://github.com/stoatworks-labs/flipdot/releases/latest/download/flipdot-macos-universal.zip) | 196 KB |
+
+</details>
+
+<details>
+<summary><b>Windows</b> — x64</summary>
+
+| Build | Download | Size |
+| --- | --- | --- |
+| x64 · .exe installer | [`flipdot-0.1.0-windows-x86_64-setup.exe`](https://github.com/stoatworks-labs/flipdot/releases/download/v0.1.0/flipdot-0.1.0-windows-x86_64-setup.exe) | 228 KB |
+| x64 · .zip archive | [`flipdot-windows-x86_64.zip`](https://github.com/stoatworks-labs/flipdot/releases/latest/download/flipdot-windows-x86_64.zip) | 121 KB |
+
+</details>
+
+All builds, checksums and release notes: [github.com/stoatworks-labs/flipdot/releases](https://github.com/stoatworks-labs/flipdot/releases).
+
+macOS builds are signed and notarised and open normally. The Windows builds are unsigned, so SmartScreen warns once.
+
+<!-- downloads:end -->
+
 ## The one idea
 
 A flip-dot sign is a grid of small discs, black on one side and fluorescent
