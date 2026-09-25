@@ -10,6 +10,11 @@
 #
 #   shaders       does every shader compile, through a real GLSL compiler,
 #                 before a host has to find out
+#   demo          the browser demo's shaders are the plugin's, character for
+#                 character (demo/tools/check_shaders.py), and its port of the
+#                 sign, driver, dither and frame sequence agrees with the
+#                 plugin's own C++ exactly (demo/tools/check_port.sh; skipped
+#                 without node or a C++ compiler)
 #   build         a fresh universal Release build, which is what ships
 #   checks        the claims the plugin exists to make, read off the rendered
 #                 picture at 640x360 and at 320x180: a whole-sign change wipes
@@ -146,6 +151,30 @@ if shaders_compile; then
 	pass "every shader compiles"
 else
 	fail "a shader does not compile"
+fi
+
+#---------------------------------------------------------------------------
+# The browser demo: demo/plugin.js cannot include a C++ file, so it carries its
+# own copy of every shader, and demo/sign.js is a hand port of the CPU half.
+# The page's claims rest on the first staying identical and the second
+# agreeing, and only these two enforce it.
+#---------------------------------------------------------------------------
+step "demo"
+if out=$(python3 demo/tools/check_shaders.py 2>&1); then
+	pass "check_shaders.py: $( printf '%s\n' "$out" | tail -1 )"
+else
+	fail "the demo's shaders have drifted from source/Shaders.cpp -- run: python3 demo/tools/splice_shaders.py"
+	printf '%s\n' "$out" | grep -E '^FAIL' | sed 's/^/      /'
+fi
+out=$(demo/tools/check_port.sh 2>&1)
+status=$?
+if [ "$status" -eq 0 ]; then
+	pass "check_port.sh: $( printf '%s\n' "$out" | tail -1 )"
+elif [ "$status" -eq 3 ]; then
+	printf '   %s\n' "$( printf '%s\n' "$out" | tail -1 )"
+else
+	fail "demo/sign.js no longer agrees with the plugin's C++ -- run: demo/tools/check_port.sh"
+	printf '%s\n' "$out" | grep -v '^ok ' | sed 's/^/      /'
 fi
 
 step "build (fresh, universal)"
