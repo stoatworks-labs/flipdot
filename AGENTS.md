@@ -4,11 +4,11 @@
 the clip on an electromagnetic flip-dot sign: a grid of bistable discs, black
 on one side and fluorescent on the other, swung by coil pulses from a driver
 board that scans a column (or a row) at a time and pulses only what changes.
-C++17 + GLSL 4.10, CMake, universal macOS `.bundle` (a Windows `.dll` is
-configured and has never been built). MIT. Intended home
+C++17 + GLSL 4.10, CMake, universal macOS `.bundle` and a Windows `.dll`
+(built by release.yml). MIT. Home
 `github.com/stoatworks-labs/flipdot`; built 2026-09-25 as a local v0.1.0 in
 `~/dev/flipdot`, tranche five, Allan's own pick. **Never loaded into
-Resolume.**
+Resolume on macOS** (on Windows, the Arena gate: below).
 
 `CLAUDE.md` is the command reference. This file is the *why*: the idea, every
 number in the harness and where its tolerance comes from, whether each would

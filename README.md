@@ -218,7 +218,7 @@ listed at the foot of the page. `tools/verify.sh` runs both checks, and a push t
 Build it (below) and run `cmake --install build`, which puts `Flipdot.bundle` into
 `~/Documents/Resolume Arena/Extra Effects`; for Avenue pass
 `--prefix "$HOME/Documents/Resolume Avenue/Extra Effects"`. Nothing in this
-repo has run inside Resolume.
+repo has run inside Resolume on macOS.
 
 ## Building
 

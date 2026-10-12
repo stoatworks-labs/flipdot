@@ -2,7 +2,7 @@
 
 The picture on an electromagnetic flip-dot sign, as an FFGL **effect** for
 Resolume Arena/Avenue. C++/GLSL, CMake MODULE → universal `.bundle` (macOS) +
-Windows `.dll`. MIT. Intended home `github.com/stoatworks-labs/flipdot`.
+Windows `.dll`. MIT. Home `github.com/stoatworks-labs/flipdot`.
 
 Read `AGENTS.md` before changing the driver, the disc model, the dither or the
 parameter list.
