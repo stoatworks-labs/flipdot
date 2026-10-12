@@ -7,7 +7,7 @@
 > The wipe lands on the frame the scan rate says it should, even on Resolume's 499,000,000 ms
 > clock, Only Changes moves only the discs whose target differs, a sign with no update holds bit
 > for bit, the stuck discs are the fraction you asked for, and the colour face's width follows
-> the stated swing within **1.1 px**. Ten
+> the stated swing within its **1.1 px** tolerance (0.99 px at worst). Ten
 > negative controls, each of which must fail, all do, every one of the 19 controls is proven to
 > change the picture at both rasters, and the bundle registers, instantiates and lights pixels
 > under the fleet's oxbow host. On Windows it passes the fleet's Arena gate, 9 of 9, in Resolume
@@ -151,7 +151,8 @@ What I've verified, by measurement on this Mac (Apple Silicon, macOS 26.4), with
 - **The swing.** One-second swings on 72 px and 36 px discs, black to colour
   and back, with Rebound 0.5: the colour face within **0.99 px** of
   2r|cos θ(t)| on all 150 frames of each, θ from the harness's own
-  velocity-Verlet integration of the torques. Constant angular speed is off by
+  velocity-Verlet integration of the torques (the check's tolerance is
+  1.1 px). Constant angular speed is off by
   up to 102 px; a swing 15 % slow by up to 73 px.
 - **The state survives.** A 640×360 ↔ 320×180 resize mid-pass: 0 of 144 discs
   changed side and the pass finished on its target; 16 → 32 columns: 0 of 288
@@ -182,7 +183,7 @@ What I've verified, by measurement on this Mac (Apple Silicon, macOS 26.4), with
 
 What isn't verified:
 
-- **Never loaded into Resolume.** Everything above is the offline harness
+- **Never loaded into Resolume on macOS.** Everything above is the offline harness
   driving the real plugin class in a headless GL context.
 - **No real audio has reached it in a host.** The onset detector is
   splitflap's, with its constants from synthetic spectra.

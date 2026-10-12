@@ -24,7 +24,8 @@ Resolume.*
 > row, and with the host's clock at 499,000,000 ms. Only Changes moves exactly the discs whose
 > picture differs and Refresh All moves every one, with the unchanged ones coming back bit for
 > bit. With no update the sign holds its picture bit for bit, and exactly round(f × N) discs are
-> stuck. The colour face's width follows the stated swing within 1.1 px against the harness's own
+> stuck. The colour face's width follows the stated swing within a 1.1 px tolerance (0.99 px at
+> worst) against the harness's own
 > integration of the torques, a resize and a regrid keep every disc's side, and loud audio on the
 > first frame fires nothing. Ten faults, put in on purpose, are shown to make those checks fail,
 > and all 19 controls are shown to change the picture.
