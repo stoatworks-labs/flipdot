@@ -1,45 +1,39 @@
 # flipdot
 
 > **AI-assisted project.** This codebase was created with [Claude](https://claude.com/claude-code)
-> (Anthropic), directed and reviewed by a human author. Every claim below is
-> *measured* off the rendered picture by an offline harness that drives the
-> real plugin class in a headless GL context, at 640×360 and at 320×180, on
-> this Mac's GPU and again on Apple's software renderer: after a whole-sign
-> change the discs of line L complete their swing on frame
-> **⌈2.4 L + 6.5⌉ exactly**, every line, by column, by row and on Resolume's
-> 499,000,000 ms clock (`fdtest --wipe`); Only Changes moves **exactly** the
-> discs whose target differs and Refresh All moves every disc (`--changes`);
-> with no update the sign holds **bit for bit** (`--bistable`); exactly
-> round(f × N) discs are stuck and never move (`--stuck`); the colour face's
-> width follows the stated swing within **1.1 px** against the harness's own
-> integration of the torques (`--rotation`); a resize and a regrid keep every
-> disc's side (`--resize`); loud audio on frame one fires nothing
-> (`--prime`). Ten negative controls, each of which must fail, all do. Every
-> one of the 19 controls is proven to change the picture at both rasters,
-> and the bundle registers, instantiates and lights pixels under the fleet's
-> oxbow host. On Windows it passes the fleet's Arena gate, 9 of 9, in
-> Resolume Arena 7.27.1 on software rendering. **It has never been loaded
-> into Resolume on macOS.**
+> (Anthropic), directed and reviewed by a human author. Every claim below is *measured* off the
+> rendered picture by an offline harness that drives the real plugin class in a headless GL
+> context, at 640×360 and at 320×180, on this Mac's GPU and again on Apple's software renderer.
+> The wipe lands on the frame the scan rate says it should, even on Resolume's 499,000,000 ms
+> clock, Only Changes moves only the discs whose target differs, a sign with no update holds bit
+> for bit, the stuck discs are the fraction you asked for, and the colour face's width follows
+> the stated swing within **1.1 px**. Ten
+> negative controls, each of which must fail, all do, every one of the 19 controls is proven to
+> change the picture at both rasters, and the bundle registers, instantiates and lights pixels
+> under the fleet's oxbow host. On Windows it passes the fleet's Arena gate, 9 of 9, in Resolume
+> Arena 7.27.1 on software rendering. **It has never been loaded into Resolume on macOS.** The
+> numbers are under Status, below.
 
-The picture on an electromagnetic flip-dot sign. An FFGL **effect** for
-Resolume Arena and Avenue.
+Your clip on an electromagnetic flip-dot sign, as an FFGL **effect** for Resolume Arena and
+Avenue. The discs swing over, bounce off their stops, and on an old sign a few of them have given
+up entirely.
 
 ![A sign of 64 by 36 yellow discs half way through a change: on the left the discs have turned to a new pattern, a column of discs is caught edge-on as a thin line, and on the right the sign still holds a sphere it kept from the previous clip](docs/hero.png)
 
 <sub>A frame of the project video: Update Now pressed on a Manual sign that kept
-the sphere through a clip cut, the new picture wiping across at 30 columns a
+the sphere through a clip cut, with the new picture wiping across at 30 columns a
 second. Rendered by the plugin's offline harness (`fdtest --pipe`) from one of
-Resolume's bundled demo clips, not captured from Resolume.</sub>
+Resolume's bundled demo clips rather than captured from Resolume.</sub>
 
 [![Flipdot — the clip on an electromagnetic flip-dot sign, for Resolume](docs/video-thumb.png)](https://www.youtube.com/watch?v=dSpM8189HsQ)
 
-*[Watch it](https://www.youtube.com/watch?v=dSpM8189HsQ) — 73 seconds at 60 fps:
+*[Watch it](https://www.youtube.com/watch?v=dSpM8189HsQ) (73 seconds at 60 fps):
 the sphere at the defaults, a Manual sign keeping its picture through a clip cut and Update Now
 wiping the new one across, a 32 by 18 sign two times up with half-second swings rebounding off
 their stops and then shivering under Refresh All, a row-by-row pass, Onset under a synthetic
 spectrum, the three dithers on a 128 by 72 sign, an old sign with a fifth of its discs stuck,
-and green and white discs. Rendered through `fdtest --pipe` from Resolume's bundled demo clips,
-not captured from Resolume.*
+and green and white discs. Rendered through `fdtest --pipe` from Resolume's bundled demo clips
+rather than captured from Resolume.*
 
 <!-- downloads:start -->
 
@@ -80,22 +74,22 @@ on the other, each with a magnet in it between the poles of a coil. A pulse
 of current one way swings a disc to its colour face, the other way to black,
 and **the disc stays where it is with no power**. The driver board scans: it
 pulses one column at a time, so a whole-sign change sweeps across the sign at
-the scan rate, and it only pulses the discs that need to change. Nothing is
-animated by hand; the look falls out of that hardware.
+the scan rate, and it only pulses the discs that need to change. None of it is
+animated by hand. The look falls out of the hardware.
 
 ### What falls out
 
 - **The wipe.** A new picture arrives line by line at the scan rate, and
-  every disc of a line starts its swing the instant the driver reaches it —
-  to the double, not to the frame.
+  every disc of a line starts its swing the instant the driver reaches it,
+  timed to the double, not to the frame.
 - **The swing takes time.** A disc is driven from rest to the far stop,
-  arriving at its fastest, and rebounds off it a few times. Filmed, the
-  moment it is edge-on is a thin line, and lit from the side it catches the
+  arriving at its fastest, and rebounds off it a few times. On camera, the
+  moment it's edge-on is a thin line, and lit from the side it catches the
   light as it turns.
 - **Bistable.** With nothing driving it the sign holds its picture, bit for
   bit, even across a clip trigger: the clip can change under a Manual sign and
   nothing moves until you press Update Now.
-- **One bit a dot.** Tone is yellow or black, so the picture is thresholded or
+- **One bit a dot.** A dot is yellow or black, so the picture is thresholded or
   dithered at the dot pitch: a hard threshold, Bayer, or Floyd–Steinberg.
 - **Old signs.** A seeded set of stuck discs that never move, exactly the
   fraction you ask for, and weak coils that swing late.
@@ -105,23 +99,23 @@ animated by hand; the look falls out of that hardware.
 
 ## Controls
 
-- **Sign** — Columns (4–192), Rows (2–108), Layout (Square / Offset: odd rows
+- **Sign:** Columns (4–192), Rows (2–108), Layout (Square / Offset: odd rows
   half a pitch across), Disc Size (0.4–1.0 of the pitch), Colour (Yellow /
   Green / White on black). The pitch is square and the sign is centred; a
-  surround the sign does not cover is transparent.
-- **Driver** — Scan (Column by Column / Row by Row), Scan Rate (4 to 4,000
+  surround the sign doesn't cover is transparent.
+- **Driver:** Scan (Column by Column / Row by Row), Scan Rate (4 to 4,000
   lines a second), Update (Continuous: the driver sweeps for ever against the
   live clip / Interval / Onset / Manual: each starts one pass over a latched
   picture), Interval, Only Changes (off: Refresh All, every disc pulsed),
   Update Now, Audio (the host's spectrum, for Onset).
-- **Discs** — Flip Time (5 ms to 1 s to reach the far stop), Rebound (the
+- **Discs:** Flip Time (5 ms to 1 s to reach the far stop), Rebound (the
   stop's restitution, 0–0.6), Stuck (0–20 % of the discs), Late (0–50 % on a
   weak coil, 1.5 to 3 times slower).
-- **Look** — Dither (Threshold / Bayer 4x4 / Floyd-Steinberg), Threshold (the
+- **Look:** Dither (Threshold / Bayer 4x4 / Floyd-Steinberg), Threshold (the
   luma that lights half the discs; black stays black), Light (from the viewer
   to 80° from the left), Mix.
 
-Defaults: a 64×36 sign of yellow discs filling a 16:9 frame, swept column by
+The defaults: a 64×36 sign of yellow discs filling a 16:9 frame, swept column by
 column at 240 a second and chasing the clip, only what changes pulsed, 40 ms a
 swing with a small rebound, a few dead dots and slow coils, Bayer at a
 threshold of 0.25 (the bundled demo clips are dark: their mean luma runs from
@@ -129,10 +123,10 @@ threshold of 0.25 (the bundled demo clips are dark: their mean luma runs from
 
 ## Status
 
-**v0.1.0, released 2026-09-25, and honestly early.** A user guide is at
+**v0.1.0, released 2026-09-25, and still early days.** There's a user guide at
 [stoatworks-labs.com/software/flipdot/guide/](https://stoatworks-labs.com/software/flipdot/guide/).
 
-Verified, by measurement on this machine (Apple Silicon, macOS 26.4), with
+What I've verified, by measurement on this Mac (Apple Silicon, macOS 26.4), with
 `tools/verify.sh` green:
 
 - **The wipe.** A 16×9 sign, black to white, 25 lines a second (2.4 frames a
@@ -151,8 +145,8 @@ Verified, by measurement on this machine (Apple Silicon, macOS 26.4), with
   bit-identical under Manual, 60 more with the clip inverted and no update,
   and 90 under Continuous with the driver sweeping a frozen clip.
 - **Stuck.** On 576 discs, Stuck 0.1 and 0.2 left 58 and 115 discs that never
-  moved through three whole-sign changes — round(0.1 × 576) and
-  round(0.2 × 576) — they were the seeded set, and 0.2's set held all of
+  moved through three whole-sign changes, which is round(0.1 × 576) and
+  round(0.2 × 576). They were the seeded set, and 0.2's set held all of
   0.1's.
 - **The swing.** One-second swings on 72 px and 36 px discs, black to colour
   and back, with Rebound 0.5: the colour face within **0.99 px** of
@@ -186,7 +180,7 @@ Verified, by measurement on this machine (Apple Silicon, macOS 26.4), with
   dots, the dark ones as a sparse sign, the ones with alpha as an opaque sign
   with black where the clip is transparent.
 
-Not verified, and not pretended:
+What isn't verified:
 
 - **Never loaded into Resolume.** Everything above is the offline harness
   driving the real plugin class in a headless GL context.
@@ -197,8 +191,8 @@ Not verified, and not pretended:
   (Mesa llvmpipe, no GPU): the fleet's Arena gate, 9 of 9, every parameter
   as declared, 12 controls (with Arena's Opacity) shown moving the picture.
   The seven that act only while discs move (Scan, Scan Rate, Update,
-  Interval, Flip Time, Rebound, Late) cannot act on the gate's still carrier,
-  where the sign settles once, and Audio was not tested (no sound device).
+  Interval, Flip Time, Rebound, Late) can't act on the gate's still carrier,
+  where the sign settles once, and Audio wasn't tested (no sound device).
 - **What the read-back costs inside Resolume** is unmeasured: the means are
   read back to the CPU with a synchronous `glReadPixels`, a stall once a
   frame in Continuous.
@@ -206,21 +200,21 @@ Not verified, and not pretended:
 
 ## Browser demo
 
-**<https://flipdot-demo.stoatworks-labs.com/>** — try it without Resolume. It
-is not the plugin: the four shaders are the plugin's own GLSL in WebGL2,
+**<https://flipdot-demo.stoatworks-labs.com/>**: try it without Resolume. It
+isn't the plugin. The four shaders are the plugin's own GLSL in WebGL2,
 copied unedited from `source/Shaders.cpp` (held to it by
-`demo/tools/check_shaders.py`), and the CPU half — the sign, the driver, the
-disc's profile, the dither, the control laws and the frame sequence — is a
+`demo/tools/check_shaders.py`), and the CPU half (the sign, the driver, the
+disc's profile, the dither, the control laws and the frame sequence) is a
 **port** to JavaScript in `demo/sign.js`. `demo/tools/check_port.sh` builds
-the plugin's own C++ and compares the port with it frame by frame; on its
+the plugin's own C++ and compares the port with it frame by frame, and on its
 cases they agree exactly. No audio reaches a browser, so Onset mode never
-fires there; nothing on the page is a performance claim. Every other gap is
-listed at the foot of the page. `tools/verify.sh` runs both checks; a push to
+fires there, and nothing on the page is a performance claim. Every other gap is
+listed at the foot of the page. `tools/verify.sh` runs both checks, and a push to
 `main` redeploys the page (`.github/workflows/deploy.yml`).
 
 ## Installing
 
-Build (below) and `cmake --install build`, which puts `Flipdot.bundle` into
+Build it (below) and run `cmake --install build`, which puts `Flipdot.bundle` into
 `~/Documents/Resolume Arena/Extra Effects`; for Avenue pass
 `--prefix "$HOME/Documents/Resolume Avenue/Extra Effects"`. Nothing in this
 repo has run inside Resolume.
@@ -237,7 +231,7 @@ via vcpkg.
 
 ## Building and testing
 
-The offline harness renders the real plugin class headlessly and reads the
+The offline harness renders the real plugin class without a window and reads the
 picture back:
 
     ./build/fdtest --out frame.png                   # the test card, 120 frames in
@@ -256,7 +250,7 @@ picture back:
     tools/mutate.sh                                  # one character of the shipped GLSL
     tools/verify.sh                                  # all of it (bash)
 
-Frames for video, the fleet's format:
+Frames for video, in the fleet's format:
 
     ffmpeg -i in.mov -f rawvideo -pix_fmt rgba - \
       | ./build/fdtest --pipe --size 1920x1080 --fps 60 --script cues.txt \
@@ -267,7 +261,7 @@ writes a still of each.
 
 ## Diagnostics
 
-`source/Diag.{h,cpp}` — log file only, no crash handler (this runs inside
+`source/Diag.{h,cpp}` is a log file only, with no crash handler (this runs inside
 Resolume). It records the GL driver, which shader failed if one did, the host
 clock's unit, and whether audio ever reached the layer.
 
@@ -281,7 +275,7 @@ This project is built on other people's work — see [ATTRIBUTIONS.md](ATTRIBUTI
 
 MIT.
 
-The mechanism is the flip-dot sign's own — a bistable disc and a scanning
-driver — and the swing is a plate under a constant torque bouncing off a
-stop. No manufacturer's firmware, artwork or sound was used, and there is no
-clatter because FFGL has no audio output.
+The mechanism is the flip-dot sign's own, a bistable disc and a scanning
+driver, and the swing is a plate under a constant torque bouncing off a
+stop. No manufacturer's firmware, artwork or sound was used, and there's no
+clatter, I'm afraid, because FFGL has no audio output.
