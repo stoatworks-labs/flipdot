@@ -133,6 +133,7 @@ FlipdotPlugin::FlipdotPlugin()
 	SetParamInfo( PT_INTERVAL, "Interval", FF_TYPE_STANDARD, mParams[ PT_INTERVAL ] );
 	SetParamInfo( PT_ONLY_CHANGES, "Only Changes", FF_TYPE_BOOLEAN, true );
 	SetParamInfo( PT_UPDATE_NOW, "Update Now", FF_TYPE_EVENT, false );
+	SetParamInfo( PT_REFRESH_ALL, "Refresh All", FF_TYPE_EVENT, false );
 
 	// An FFT buffer: Resolume shows it as an audio-source picker and writes
 	// one spectrum bin per element. With no audio routed Onset never fires.
@@ -149,7 +150,7 @@ FlipdotPlugin::FlipdotPlugin()
 	for( int i = 0; i < kDitherCount; ++i )
 		SetParamElementInfo( PT_DITHER, static_cast< unsigned >( i ), kDitherNames[ i ], static_cast< float >( i ) );
 	SetParamInfo( PT_THRESHOLD, "Threshold", FF_TYPE_STANDARD, mParams[ PT_THRESHOLD ] );
-	SetParamInfo( PT_LIGHT, "Light", FF_TYPE_STANDARD, mParams[ PT_LIGHT ] );
+	SetParamInfo( PT_LIGHT, "Light Angle", FF_TYPE_STANDARD, mParams[ PT_LIGHT ] );
 	SetParamInfo( PT_MIX, "Mix", FF_TYPE_STANDARD, mParams[ PT_MIX ] );
 
 	for( FFUInt32 i = PT_COLUMNS; i <= PT_COLOUR; ++i )
@@ -457,6 +458,11 @@ FFResult FlipdotPlugin::ProcessOpenGL( ProcessOpenGLStruct* pGL )
 	settings.onlyChanges = mParams[ PT_ONLY_CHANGES ] > 0.5f;
 	settings.flipTime    = FlipTimeFromParam( mParams[ PT_FLIP_TIME ] );
 	settings.restitution = ReboundFromParam( mParams[ PT_REBOUND ] );
+	if( mRefreshPending )
+	{
+		mSign.ForgetCommands();
+		mRefreshPending = false;
+	}
 	mSign.Advance( dt, mFireThisFrame, mTarget, settings );
 	mFirstFrame = false;
 
@@ -528,6 +534,13 @@ FFResult FlipdotPlugin::SetFloatParameter( unsigned int index, float value )
 		//An event arrives as 1.0 on press and 0.0 on release.
 		if( value >= 0.5f )
 			mUpdatePending = true;
+		return FF_SUCCESS;
+	}
+	if( index == PT_REFRESH_ALL )
+	{
+		//Forget what was written, then an update, so every mode gets its pass.
+		if( value >= 0.5f )
+			mRefreshPending = mUpdatePending = true;
 		return FF_SUCCESS;
 	}
 

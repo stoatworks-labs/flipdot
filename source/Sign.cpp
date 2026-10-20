@@ -29,6 +29,7 @@ double hash01( uint32_t h )
 }
 
 constexpr uint32_t kStuckSalt = 0x57u;
+constexpr uint8_t kNeverWritten = 2;///< not a face: the driver's memory after Refresh All
 constexpr uint32_t kSideSalt  = 0x5Du;
 constexpr uint32_t kLateSalt  = 0x1Au;
 constexpr uint32_t kWeakSalt  = 0xE7u;
@@ -44,6 +45,15 @@ void Sign::Reset()
 	mHead    = 0.0;
 	mNext    = 0;
 	std::fill( mLatched.begin(), mLatched.end(), 0 );
+}
+
+void Sign::ForgetCommands()
+{
+	if( debug.noForget )
+		return;
+	// No face is 2, so the next write of every disc differs from "the last".
+	for( Disc& d : mDiscs )
+		d.commanded = kNeverWritten;
 }
 
 void Sign::Configure( int columns, int rows, double stuck, double late )

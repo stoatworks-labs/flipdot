@@ -53,6 +53,7 @@ enum ParamId : FFUInt32
 	PT_INTERVAL,
 	PT_ONLY_CHANGES,
 	PT_UPDATE_NOW,
+	PT_REFRESH_ALL,
 	PT_AUDIO,
 
 	// -- Discs ---------------------------------------------------------------

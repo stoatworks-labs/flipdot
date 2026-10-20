@@ -126,13 +126,13 @@ Every one of them also runs on Apple's software renderer in `verify.sh`.
 | Check | The number | Where the tolerance comes from |
 | --- | --- | --- |
 | `--wipe` | **0 of 144** wrong, 6 runs (column, row, 499 M ms clock × 2 rasters) | A 16×9 sign, black to white, 25 lines/s (2.4 frames a line), a 6.5-frame swing, Rebound 0, lit 80° off-axis. Line L lands 2.4 L + 6.5 frames after the press; its fraction is one of .5 .9 .3 .7 .1, never within **a tenth of a frame** of a whole one, so the landing frame is ⌈2.4 L + 6.5⌉ with nothing to round. The float Scan Rate and Flip Time (a few parts in 10⁷) move it by < 10⁻⁵ frame. "Completed" is the first frame from which the cell is bit-identical to the run's last. The frame before landing is at worst u = 1 − 0.1/6.5, 0.096 rad short of the stop; lit from 80° the face's shade then differs by sin 80° × 0.7 × 0.096 = 0.066, **17 levels**, so it cannot pass for landed. Tolerance: **0 frames**. |
-| `--changes` | Only Changes **73 moved = 73 differed**; Refresh All **144 of 144** moved, **71 of 71** unchanged back bit-identical; **0** off target | 144 discs, two seeded pictures. Rebound 0.6 lit from 80°, so a kick rises 0.57 rad: the colour face brightens ~60 levels, the black face's edge moves 16 % of r (1.4 px at r = 9). Exact counts; no tolerance. |
+| `--changes` | Only Changes **73 moved = 73 differed**; Refresh All **144 of 144** moved, **71 of 71** unchanged back bit-identical, and the same with the Refresh All button under Only Changes; **0** off target | 144 discs, two seeded pictures. Rebound 0.6 lit from 80°, so a kick rises 0.57 rad: the colour face brightens ~60 levels, the black face's edge moves 16 % of r (1.4 px at r = 9). Exact counts; no tolerance. |
 | `--bistable` | **0** of 90, **0** of 60, **0** of 90 frames differed | The default sign on the test card, both rasters: Manual settled (bound: a 0.27 s sweep + a weak disc's 3 × 40 ms swing + its 0.43-flip rebound = 0.4 s; 60 frames given), the clip then inverted with no update, and Continuous sweeping a frozen clip. Bit-identity: no tolerance. |
-| `--stuck` | **58** = round(0.1 × 576), **115** = round(0.2 × 576); **0** off the seeded set; **0** of 58 lost at 0.2 | 32×18, three whole-sign changes. The count is exact by construction (the first round(f × N) of a seeded order), so the check asks for it exactly, and that the set seen off the picture is the plugin's. |
+| `--stuck` | **58** = round(0.1 × 576), **115** = round(0.2 × 576); **0** off the seeded set; **0** of 58 lost at 0.2 | 32×18, three whole-sign changes. The count is exact by construction (the first round(f × N) of a seeded order), so the check asks for it exactly, and that the set seen off the picture is the plugin's. Then Stuck 0.2 lowered to 0 on a still white card: **46** freed discs stay off it through Update Now, **0** after Refresh All. |
 | `--rotation` | worst **0.97 / 0.99 px** (r = 72, 640×360), **0.94 / 0.95 px** (r = 36, 320×180); the same on the software renderer | 4×2 (the controls' minimum), one-second swings black→colour and colour→black, Rebound 0.5, 150 frames each; disc (0,0) is on line 0, visited at the press, so frame k is u = k/60 exactly. θ(u) is the harness's **own velocity-Verlet integration** (step 10⁻⁵, impacts solved inside the step) of the torques, not Disc.cpp's closed form. Width = pixels on the centre row at or above half way between the face's own level and 6.1. The shader's coverage is exact on that row, so the count is the pixel centres within ±w: **1 px** for the pixel-centre rule at two edges; + 2 × **0.022 px** for what lies under the edge (rim 9.2 or recess 3.1, against the 6.1 used); + 2 × **0.014 px** for 8-bit rounding of the edge and the centre pixel. Bound 1.07, tolerance **1.1 px**, the same at both rasters because it is about two edges, not r. |
 | `--resize` | **0 of 144** changed side across the resize (39 already swung), **0** off target after; **0 of 288** off their parent after 16 → 32 columns | Sides read off centre pixels; exact. |
 | `--prime` | fired **0**, moved on **0** of 61 frames; the real onset fired on frame **0** of its step and **144 of 144** turned; after a retrigger fired **0**, changed **0** | All 64 bins at 0.5 from frame 0 (a fire on frame 0 counts: it is the trap). Then 1.0: flux 64(1 − √0.5) = 18.7 against a floor seeded at 64 × 0.707 / 8 = 5.7, × 2.5 = 14.1. Then 0.8 steady across `DeInitGL`/`InitGL`. Every bin gets the same value: nothing assumes the 64 bins are linear, or anything else about them. |
-| sweep | **19 of 19** change the picture at both rasters | Two renders per control, low and high of its real range, in a context per control (`tools/sweep.py`). |
+| sweep | **20 of 20** change the picture at both rasters | Two renders per control, low and high of its real range, in a context per control (`tools/sweep.py`). |
 | pipe | **27,648** bytes for three 64×36 frames; exit **1** on hang-up | 64 × 36 × 4 × 3. `head -c 1` closes the pipe under a 4.6 MB write. |
 
 ## Would this hold on another rasteriser, at another raster?
@@ -170,7 +170,7 @@ Every one of them also runs on Apple's software renderer in `verify.sh`.
 ## Negative controls
 
 Shipped in `fdtest --negative`, each through a `FlipdotPlugin::Debug` flag the
-harness sets on the real plugin; **10 of 10 caught**:
+harness sets on the real plugin; **12 of 12 caught**:
 
 | Broken model | Check | What failed |
 | --- | --- | --- |
@@ -178,6 +178,8 @@ harness sets on the real plugin; **10 of 10 caught**:
 | the frame delta taken between two floats of the host clock | `--wipe` | 90 of 144 on the 499 M ms clock; the seconds clock still passes, as it must |
 | every disc pulsed under Only Changes | `--changes` | 144 moved against 73 differing, both rasters |
 | every disc pulsed under Only Changes | `--bistable` | Continuous: 85 of 90 frames differed |
+| Refresh All forgetting nothing | `--changes` | the button moved 73 of 144, only the differing ones, both rasters |
+| Refresh All forgetting nothing | `--stuck` | 46 freed discs still off a white card after Refresh All, both rasters |
 | stuck discs obeying their coils | `--stuck` | 0 never moved, against 58 and 115 |
 | constant angular speed | `--rotation` | off by up to 102 px |
 | the swing 15 % slower than Flip Time | `--rotation` | off by up to 73 px |
@@ -370,8 +372,8 @@ splitflap's letterbox is, so a small sign composites over the layers below.
 **Square pitch, as large as fits, centred.** Discs are round, so the pitch is
 square; the default 64×36 fits 16:9 exactly.
 
-**The light is in the horizontal plane**, from the viewer (Light 0) to 80°
-from the left (Light 1), Lambert with ambient 0.3; the recess shades the far
+**The light is in the horizontal plane**, from the viewer (Light Angle 0) to 80°
+from the left (Light Angle 1), Lambert with ambient 0.3; the recess shades the far
 side of each disc from an oblique light, up to 45 % at the edge — the "lit
 side". The black face is 0.08, the sign face 0.035, the recess 0.012, the rim
 0.12.
@@ -381,7 +383,7 @@ side". The black face is 0.08, the sign face 0.035, the recess 0.012, the rim
 **Defaults**, from the demo clips: 64×36, yellow, 240 lines a second (a
 0.27 s sweep), Continuous, Only Changes, 40 ms a swing (2.4 frames: a frame
 in two catches a disc mid-swing), Rebound 0.3, Stuck 0.3 % (7 dead dots),
-Late 2 %, Bayer at 0.25, Light 0.3 (24°).
+Late 2 %, Bayer at 0.25, Light Angle 0.3 (24°).
 
 **Onset is splitflap's detector unchanged**: one detector over all 64 bins,
 root magnitude, flux against a one-second floor seeded at an eighth of the
@@ -443,8 +445,8 @@ faithful:**
 
 **Verified, by measurement on this machine (M4 Max, macOS 26.4.1),
 `tools/verify.sh` green:** everything in the table above, at both rasters, on
-the GPU and on Apple's software renderer; all ten negative controls caught;
-the mutation test, by hand and scripted; 19 of 19 controls alive at both
+the GPU and on Apple's software renderer; all twelve negative controls caught;
+the mutation test, by hand and scripted; 20 of 20 controls alive at both
 rasters; the pipe's byte count and hang-up status; the four shaders through
 glslc; the bundle universal, exporting `plugMain`, ad-hoc signed, probed under
 oxbow as SW Flipdot / FD01 / effect and rendering frames there; the render

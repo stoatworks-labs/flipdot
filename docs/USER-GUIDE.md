@@ -22,13 +22,14 @@ Resolume.*
 > out of the picture, at two rasters and on Apple's software renderer. After a whole-sign change
 > every disc of line L finishes its swing on frame ⌈2.4 L + 6.5⌉ exactly, column by column, row by
 > row, and with the host's clock at 499,000,000 ms. Only Changes moves exactly the discs whose
-> picture differs and Refresh All moves every one, with the unchanged ones coming back bit for
-> bit. With no update the sign holds its picture bit for bit, and exactly round(f × N) discs are
-> stuck. The colour face's width follows the stated swing within a 1.1 px tolerance (0.99 px at
+> picture differs and Refresh All (off, or the button) moves every one, with the unchanged ones
+> coming back bit for bit. With no update the sign holds its picture bit for bit, exactly
+> round(f × N) discs are stuck, and the ones freed by lowering Stuck land when Refresh All is
+> pressed. The colour face's width follows the stated swing within a 1.1 px tolerance (0.99 px at
 > worst) against the harness's own
 > integration of the torques, a resize and a regrid keep every disc's side, and loud audio on the
-> first frame fires nothing. Ten faults, put in on purpose, are shown to make those checks fail,
-> and all 19 controls are shown to change the picture.
+> first frame fires nothing. Twelve faults, put in on purpose, are shown to make those checks
+> fail, and all 20 controls are shown to change the picture.
 >
 > **The sign's constants are chosen, not measured from a real sign**: the swing's torque law, the
 > rebound's restitution, the light and the colours. **The onset detector's constants were set on
@@ -116,7 +117,7 @@ Then:
    with no power. Press **Update Now** and the new picture wipes across. Lower **Scan Rate** to
    about 0.3 (30 columns a second) and the wipe takes two seconds; raise **Flip Time** and each
    disc takes longer to turn.
-2. **Light → 0.75** and **Flip Time → 0.87** (about half a second), **Rebound → 1**. Every change is
+2. **Light Angle → 0.75** and **Flip Time → 0.87** (about half a second), **Rebound → 1**. Every change is
    now a slow swing: the disc narrows to a bright edge, lands, and bounces.
 3. **Only Changes → off.** Every disc is pulsed on every pass; the ones already right shiver in
    their stops.
@@ -181,6 +182,11 @@ the right face is driven into its stop and rebounds, a shiver, which is invisibl
 **Update Now:** a button. In Manual (and any other latched mode) it latches the picture and
 starts a pass.
 
+**Refresh All:** a button. The driver forgets what it last wrote and starts a pass, so every disc
+is pulsed once, as Only Changes off would, and then it carries on as set. It's the full rewrite a
+real sign's controller does now and then. A disc freed by lowering Stuck lands on its picture; one
+already right shivers off its stop and back.
+
 **Audio:** the audio source for **Onset**, the host's spectrum. Onset is one detector over all
 64 of Resolume's spectrum bins: a rise in the summed flux against a floor that follows over about a
 second, with a tenth of a second before it can fire again. It's primed on the first frame, so a
@@ -202,7 +208,8 @@ and from then on the disc is exactly at its stop.
 **Stuck:** 0 to 1, default 0.015. The share of discs that never move: 0.2 × value, **0.3 % at the
 default** (7 of the 2,304 discs of a 64 × 36 sign). The stuck discs are a fixed, seeded set, about
 half of them jammed on the colour face; raising Stuck only adds discs to it. A disc freed by
-lowering Stuck stays where it was jammed until its picture next changes.
+lowering Stuck stays where it was jammed until its picture next changes, or until you press
+**Refresh All**.
 
 **Late:** 0 to 1, default 0.04. The share of discs on a weak coil: 0.5 × value, **2 % at the
 default**. A weak disc swings 1.5 to 3 times slower than Flip Time, so it lands after its
@@ -221,9 +228,10 @@ every sweep, so noise in a clip becomes discs flipping all over the sign.
 curve through black, (Threshold, one half) and white, for every dither: black stays black and
 white stays white whatever it's set to. Lower lights more of a dark clip.
 
-**Light:** 0 to 1, default 0.3. Where the light is, in the horizontal plane: from the viewer at 0
-to 80° off the left at 1, 24° at the default. Toward 1 the flat faces darken, the recess shades
-the far side of each disc, and a disc turning edge-on catches the light.
+**Light Angle:** 0 to 1, default 0.3. Where the light is, in the horizontal plane: from the viewer
+at 0 to 80° off the left at 1, 24° at the default. It's an angle, not a brightness: toward 1 the
+flat faces darken, the recess shades the far side of each disc, and a disc turning edge-on catches
+the light. Called **Light** in 0.1.0, so a composition saved with it set loses that value.
 
 **Mix:** 0 to 1, default 1. Blends the whole output with the source. The sign is opaque inside
 its rectangle (a transparent area of the clip is black discs, not a hole), and the surround a
@@ -287,11 +295,12 @@ while, and a column the driver hasn't reached again still shows what was there. 
 **The whole sign flickers with Floyd–Steinberg.** Error diffusion spreads a small change in the
 clip across the whole sign every sweep. Use Bayer, or a latched Update mode.
 
-**Some dots never change.** Those are the stuck discs; lower Stuck to 0.
+**Some dots never change.** Those are the stuck discs; lower Stuck to 0, then press **Refresh All**
+to land the ones it freed.
 
 **Some dots land late.** Those are the weak coils; lower Late to 0.
 
-**The discs look dim and brown.** Light is high: the faces are lit from the side. Lower it.
+**The discs look dim and brown.** Light Angle is high: the faces are lit from the side. Lower it.
 
 **SW Flipdot isn't in the effects browser.** Check the folder under Installing, and that Resolume
 was restarted.

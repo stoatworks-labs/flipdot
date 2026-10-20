@@ -315,8 +315,8 @@ function createRenderer(gl, quad) {
     engine,
     render({ input, params, width, height, time }) {
       //------------------------------------------------------------------
-      // The host's parameter writes. Update Now is an event: one press is
-      // SetFloatParameter( 1 ), and the page releases the button.
+      // The host's parameter writes. Update Now and Refresh All are events:
+      // one press is SetFloatParameter( 1 ), and the page releases the button.
       //------------------------------------------------------------------
       for (const d of ON_PAGE) {
         if (d.type === 'event') continue;
@@ -325,6 +325,10 @@ function createRenderer(gl, quad) {
       if (params.get('updateNow') > 0.5) {
         engine.setParam(S.PT.UPDATE_NOW, 1);
         params.set('updateNow', 0, { silent: true });
+      }
+      if (params.get('refreshAll') > 0.5) {
+        engine.setParam(S.PT.REFRESH_ALL, 1);
+        params.set('refreshAll', 0, { silent: true });
       }
 
       const pictureWidth = input.width;
@@ -437,6 +441,7 @@ const HINTS = {
   interval: { display: (v) => seconds(S.intervalFromParam(v)), hint: 'Seconds between updates in Interval mode, 0.1 to 10, geometric, ticking from the moment the mode was chosen. A stall longer than the interval gives one update, not a burst.' },
   onlyChanges: { hint: 'On: the driver pulses only the discs whose target differs from what it last wrote to them (a driver cannot read a disc back). Off, Refresh All: every disc is pulsed, and one already showing the right face is driven into its own stop and rebounds, which is invisible at Rebound 0.' },
   updateNow: { hint: 'FF_TYPE_EVENT in the plugin: one press, one update, in any Update mode. The kit has no event control, so this is a button.' },
+  refreshAll: { hint: 'FF_TYPE_EVENT in the plugin: the driver forgets what it last wrote and starts a pass, so every disc is pulsed once, Only Changes or not. A disc freed by lowering Stuck lands on its picture; one already right shivers off its stop.' },
   flipTime: { display: (v) => `${seconds(S.flipTimeFromParam(v))} a swing`, hint: 'Seconds for a disc to first reach the far stop, 5 ms to 1 s, geometric. The swing is a constant torque from rest, θ = π u², so a disc arrives at its fastest; the rebound follows.' },
   rebound: { display: (v) => `e = ${S.reboundFromParam(v).toFixed(2)}`, hint: 'Restitution at the stop, 0 to 0.6. Rebound k leaves at 2π e^k, lasts e^k swings and rises π e^(2k) / 2; the train is cut once a rebound would rise less than half a degree, so a settled sign is still to the bit.' },
   stuck: { display: (v) => `${(S.stuckFromParam(v) * 100).toFixed(2)} % never move`, hint: 'The fraction of discs jammed on a seeded side, 0 to 20 %: exactly round(f × N) of them, the first of a seeded order, so raising it only adds discs. A disc freed by lowering it stays where it was jammed.' },
@@ -534,24 +539,30 @@ const demo = mountDemo({
 });
 
 //---------------------------------------------------------------------------
-// After mount: Update Now is an event, so its row gets a button rather than
-// the kit's On/Off toggle; a toggle reading "Off" for a control that cannot
-// be on is the wrong picture of a host's inspector.
+// After mount: Update Now and Refresh All are events, so their rows get a
+// button rather than the kit's On/Off toggle; a toggle reading "Off" for a
+// control that cannot be on is the wrong picture of a host's inspector.
 //---------------------------------------------------------------------------
 window.__flipdotDemo.demo = demo;
 
 if (demo && !new URLSearchParams(window.location.search).has('embed')) {
+  const EVENTS = {
+    'Update Now': ['updateNow', 'One press: the driver latches the clip and starts a pass, in any Update mode.'],
+    'Refresh All': ['refreshAll', 'One press: the driver forgets what it wrote and starts a pass that pulses every disc.'],
+  };
   for (const row of document.querySelectorAll('.prow--boolean')) {
     const label = row.querySelector('.prow__name');
-    if (!label || label.textContent !== 'Update Now') continue;
+    const event = label && EVENTS[label.textContent];
+    if (!event) continue;
+    const [id, title] = event;
     const toggle = row.querySelector('.prow__toggle');
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'btn';
-    button.textContent = 'Update Now';
-    button.title = 'One press: the driver latches the clip and starts a pass, in any Update mode.';
+    button.textContent = label.textContent;
+    button.title = title;
     button.addEventListener('click', () => {
-      demo.params.set('updateNow', 1);
+      demo.params.set(id, 1);
       demo.redraw();
     });
     if (toggle) toggle.replaceWith(button);

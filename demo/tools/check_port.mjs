@@ -348,6 +348,14 @@ const CASES = {
     { set: { scanRate: 0.999, flipTime: 0.999, rebound: 0.999 } }, ...frames(24, 30, 2, undefined, 'black'),
     { set: { flipTime: 0.5, rebound: 0.5 } }, ...frames(24, 30, 4, undefined, 'scene'),
   ],
+  'Stuck at its maximum lowered to 0, then Refresh All in Manual and in Continuous': [
+    { set: { stuck: 1, update: 3 } }, ...frames(60, 10, 0, undefined, 'white'),
+    { set: { updateNow: 1 } }, ...frames(60, 30, 0.2, undefined, 'white'),
+    { set: { stuck: 0 } }, { set: { updateNow: 1 } }, ...frames(60, 20, 0.8, undefined, 'white'),
+    { set: { refreshAll: 1 } }, ...frames(60, 40, 1.2, undefined, 'white'),
+    { set: { update: 0, stuck: 0.5 } }, ...frames(60, 20, 2.0, undefined, 'noise'),
+    { set: { stuck: 0, refreshAll: 1 } }, ...frames(60, 30, 2.4, undefined, 'noise'),
+  ],
   'Onset on silence, Update Now in Onset, Only Changes off in Continuous': [
     { set: { update: 2 } }, ...frames(60, 30, 0, undefined, 'white'),
     { set: { updateNow: 1 } }, ...frames(60, 30, 0.5, undefined, 'white'),

@@ -442,6 +442,13 @@ struct Session
 		plugin.SetFloatParameter( PT_UPDATE_NOW, 0.0f );
 	}
 
+	/// Press Refresh All for the next frame.
+	void pressRefresh()
+	{
+		plugin.SetFloatParameter( PT_REFRESH_ALL, 1.0f );
+		plugin.SetFloatParameter( PT_REFRESH_ALL, 0.0f );
+	}
+
 	/// Render the next frame of the synthetic clock and read it back.
 	Image frame()
 	{
@@ -521,7 +528,7 @@ void plainSign( Session& s, int columns, int rows )
 	s.set( "Late", 0.0f );
 	s.set( "Dither", static_cast< float >( kDitherThreshold ) );
 	s.set( "Threshold", 0.5f );
-	s.set( "Light", 0.0f );
+	s.set( "Light Angle", 0.0f );
 	s.set( "Mix", 1.0f );
 }
 
@@ -618,7 +625,7 @@ void checkWipe( const Debug& debug )
 			s.set( "Scan", static_cast< float >( scanRows ? kScanRows : kScanColumns ) );
 			s.set( "Scan Rate", ScanRateToParam( rate ) );
 			s.set( "Flip Time", FlipTimeToParam( flipFrames / 60.0 ) );
-			s.set( "Light", 1.0f );
+			s.set( "Light Angle", 1.0f );
 
 			s.setInput( flatCard( g, false ) );
 			s.frames( 10 );
@@ -667,7 +674,8 @@ void checkWipe( const Debug& debug )
 
 //---------------------------------------------------------------------------
 // --changes: Only Changes pulses exactly the discs whose target differs;
-// Refresh All pulses every disc, and each still ends on its target.
+// Refresh All pulses every disc, and each still ends on its target; so does
+// the Refresh All button with Only Changes on, for one pass.
 //
 // "Moved" is a disc's cell differing, on any frame of the update, from the
 // settled frame before it. A disc pulsed toward the face it already shows
@@ -680,7 +688,7 @@ void checkWipe( const Debug& debug )
 void checkChanges( const Debug& debug )
 {
 	for( const Raster& raster : kRasters )
-		for( int refresh = 0; refresh < 2; ++refresh )
+		for( int refresh = 0; refresh < 3; ++refresh )
 		{
 			constexpr int columns = 16, rows = 9;
 			const Grid g { raster.width, raster.height, columns, rows };
@@ -692,7 +700,7 @@ void checkChanges( const Debug& debug )
 			s.set( "Scan Rate", ScanRateToParam( 400.0 ) );
 			s.set( "Flip Time", FlipTimeToParam( 0.1 ) );
 			s.set( "Rebound", ReboundToParam( 0.6 ) );
-			s.set( "Light", 1.0f );
+			s.set( "Light Angle", 1.0f );
 
 			auto a = []( int c, int r ) { return seededBit( c, r, 1 ); };
 			auto b = []( int c, int r ) { return seededBit( c, r, 2 ); };
@@ -701,9 +709,12 @@ void checkChanges( const Debug& debug )
 			s.press();
 			const Image before = s.frames( 60 );
 
-			s.set( "Only Changes", refresh ? 0.0f : 1.0f );
+			s.set( "Only Changes", refresh == 1 ? 0.0f : 1.0f );
 			s.setInput( bitCard( g, b ) );
-			s.press();
+			if( refresh == 2 )
+				s.pressRefresh();
+			else
+				s.press();
 			std::vector< bool > moved( static_cast< size_t >( columns * rows ), false );
 			Image last;
 			for( int f = 0; f < 60; ++f )
@@ -732,8 +743,8 @@ void checkChanges( const Debug& debug )
 				}
 			if( refresh )
 				report( wrongSet == 0 && wrongSide == 0 && notBack == 0,
-				        "%dx%d, Refresh All: %d of %d discs moved (every one pulsed; %d targets differed), %d on the wrong side, %d unchanged discs not back bit-identical",
-				        raster.width, raster.height, movedCount, columns * rows, differ, wrongSide, notBack );
+				        "%dx%d, Refresh All%s: %d of %d discs moved (every one pulsed; %d targets differed), %d on the wrong side, %d unchanged discs not back bit-identical",
+				        raster.width, raster.height, refresh == 2 ? " (the button, Only Changes on)" : "", movedCount, columns * rows, differ, wrongSide, notBack );
 			else
 				report( wrongSet == 0 && wrongSide == 0 && notBack == 0,
 				        "%dx%d, Only Changes: %d discs moved, %d targets differed, %d not in the differing set, %d on the wrong side",
@@ -879,6 +890,30 @@ void checkStuck( const Debug& debug )
 				report( lost == 0, "%dx%d: every disc stuck at 0.10 is stuck at 0.20 too (%d lost)", raster.width, raster.height, lost );
 			}
 			previous = stuckSeen;
+
+			if( fraction == fractions[ 1 ] )
+			{
+				// Stuck lowered to 0 on a still white card: the freed discs stay
+				// where they jammed through an Update Now (Only Changes has
+				// nothing to write), and the Refresh All button lands them.
+				auto offTarget = [ & ]( const Image& img ) {
+					int n = 0;
+					for( int r = 0; r < rows; ++r )
+						for( int c = 0; c < columns; ++c )
+							n += sideAt( img, g, c, r ) ? 0 : 1;
+					return n;
+				};
+				s.set( "Stuck", 0.0f );
+				s.press();
+				const Image afterUpdate  = s.frames( 20 );
+				const int jammed         = offTarget( afterUpdate );
+				s.pressRefresh();
+				const Image afterRefresh = s.frames( 20 );
+				const int left           = offTarget( afterRefresh );
+				report( jammed > 0 && left == 0,
+				        "%dx%d, Stuck 0.20 lowered to 0: %d freed discs still off a white card after Update Now, %d after Refresh All",
+				        raster.width, raster.height, jammed, left );
+			}
 		}
 	}
 }
@@ -1225,6 +1260,8 @@ int runNegative()
 	noScan.sign.noScan = true;
 	Debug pulseAll;
 	pulseAll.sign.pulseAll = true;
+	Debug noForget;
+	noForget.sign.noForget = true;
 	Debug ignoreStuck;
 	ignoreStuck.sign.ignoreStuck = true;
 	Debug linear;
@@ -1244,6 +1281,8 @@ int runNegative()
 		{ "--wipe with the whole sign pulsed at once (no scan)", noScan, checkWipe },
 		{ "--wipe with the frame delta taken between floats of the host clock", floatClock, checkWipe },
 		{ "--changes with every disc pulsed in Only Changes", pulseAll, checkChanges },
+		{ "--changes with Refresh All forgetting nothing", noForget, checkChanges },
+		{ "--stuck with Refresh All forgetting nothing", noForget, checkStuck },
 		{ "--bistable with every disc pulsed in Only Changes", pulseAll, checkBistable },
 		{ "--stuck with stuck discs obeying their coils", ignoreStuck, checkStuck },
 		{ "--rotation at constant angular speed", linear, checkRotation },

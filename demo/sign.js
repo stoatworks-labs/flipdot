@@ -30,10 +30,10 @@
 
 export const PT = {
   COLUMNS: 0, ROWS: 1, LAYOUT: 2, DISC_SIZE: 3, COLOUR: 4,
-  SCAN: 5, SCAN_RATE: 6, UPDATE: 7, INTERVAL: 8, ONLY_CHANGES: 9, UPDATE_NOW: 10, AUDIO: 11,
-  FLIP_TIME: 12, REBOUND: 13, STUCK: 14, LATE: 15,
-  DITHER: 16, THRESHOLD: 17, LIGHT: 18, MIX: 19,
-  ABOUT_TEXT: 20,
+  SCAN: 5, SCAN_RATE: 6, UPDATE: 7, INTERVAL: 8, ONLY_CHANGES: 9, UPDATE_NOW: 10, REFRESH_ALL: 11, AUDIO: 12,
+  FLIP_TIME: 13, REBOUND: 14, STUCK: 15, LATE: 16,
+  DITHER: 17, THRESHOLD: 18, LIGHT: 19, MIX: 20,
+  ABOUT_TEXT: 21,
 };
 export const K_AUDIO_BINS = 64;
 
@@ -258,6 +258,11 @@ export class Sign {
     this.head = 0.0;
     this.next = 0;
     this.latched.fill(0);
+  }
+
+  /** ForgetCommands: no face is 2, so the next write of every disc differs. */
+  forgetCommands() {
+    this.commanded.fill(2);
   }
 
   configure(columns, rows, stuck, late) {
@@ -593,6 +598,7 @@ export const DECLARED = [
   { index: PT.INTERVAL, id: 'interval', name: 'Interval', type: 'standard', default: intervalToParam(2.0), group: 'Driver' },
   { index: PT.ONLY_CHANGES, id: 'onlyChanges', name: 'Only Changes', type: 'boolean', default: 1, group: 'Driver' },
   { index: PT.UPDATE_NOW, id: 'updateNow', name: 'Update Now', type: 'event', default: 0, group: 'Driver' },
+  { index: PT.REFRESH_ALL, id: 'refreshAll', name: 'Refresh All', type: 'event', default: 0, group: 'Driver' },
   { index: PT.AUDIO, id: 'audio', name: 'Audio', type: 'buffer', default: 0, bins: K_AUDIO_BINS, group: 'Driver', page: false },
   { index: PT.FLIP_TIME, id: 'flipTime', name: 'Flip Time', type: 'standard', default: flipTimeToParam(0.04), group: 'Discs' },
   { index: PT.REBOUND, id: 'rebound', name: 'Rebound', type: 'standard', default: reboundToParam(0.3), group: 'Discs' },
@@ -600,7 +606,7 @@ export const DECLARED = [
   { index: PT.LATE, id: 'late', name: 'Late', type: 'standard', default: lateToParam(0.02), group: 'Discs' },
   { index: PT.DITHER, id: 'dither', name: 'Dither', type: 'option', default: K_DITHER_BAYER, elements: DITHER_NAMES, group: 'Look' },
   { index: PT.THRESHOLD, id: 'threshold', name: 'Threshold', type: 'standard', default: f32(0.25), group: 'Look' },
-  { index: PT.LIGHT, id: 'light', name: 'Light', type: 'standard', default: f32(0.3), group: 'Look' },
+  { index: PT.LIGHT, id: 'light', name: 'Light Angle', type: 'standard', default: f32(0.3), group: 'Look' },
   { index: PT.MIX, id: 'mix', name: 'Mix', type: 'standard', default: f32(1.0), group: 'Look' },
 ];
 
@@ -635,6 +641,7 @@ export class Engine {
     this.onsetFired = false;
     this.fireThisFrame = false;
     this.updatePending = false;
+    this.refreshPending = false;
     this.nextTick = -1.0;
     this.lastUpdateMode = -1;
     this.pictureWidth = 0;
@@ -647,6 +654,10 @@ export class Engine {
   setParam(index, value) {
     if (index === PT.UPDATE_NOW) {
       if (f32(value) >= 0.5) this.updatePending = true;
+      return;
+    }
+    if (index === PT.REFRESH_ALL) {
+      if (f32(value) >= 0.5) this.refreshPending = this.updatePending = true;
       return;
     }
     this.params[index] = value;
@@ -743,6 +754,10 @@ export class Engine {
       flipTime: flipTimeFromParam(P[PT.FLIP_TIME]),
       restitution: reboundFromParam(P[PT.REBOUND]),
     };
+    if (this.refreshPending) {
+      this.sign.forgetCommands();
+      this.refreshPending = false;
+    }
     this.sign.advance(dt, this.fireThisFrame, this.target, settings);
     this.firstFrame = false;
     if (this.fireThisFrame) this.fires += 1;

@@ -67,6 +67,7 @@ public:
 		bool linearProfile = false;///< constant angular speed, no rebound
 		double flipScale   = 1.0;  ///< the swing detuned without Flip Time knowing
 		bool clearOnRegrid = false;///< a Columns or Rows change starts a blank sign
+		bool noForget      = false;///< Refresh All forgets nothing
 	};
 
 	enum Motion : uint8_t
@@ -100,6 +101,12 @@ public:
 
 	/// Every disc black, the driver idle. A fresh sign.
 	void Reset();
+
+	/// Refresh All: the driver forgets what it last wrote, so the next visit of
+	/// every line pulses every disc on it once, Only Changes or not. A disc
+	/// freed by lowering Stuck lands on its picture; one already right is
+	/// driven into its stop and rebounds. Stuck discs still don't move.
+	void ForgetCommands();
 
 	/// One frame. `dt` is the seconds since the last frame; `fire` is an
 	/// update this frame (ignored when continuous); `target` is one byte per

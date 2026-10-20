@@ -70,6 +70,8 @@ CONTEXT = {
     "Update": dict(MOVING, _high=3),
     "Interval": dict(MOVING, Update=1),
     "Update Now": dict(MOVING, Update=3, _press=60),
+    # Forgets what was written and fires a pass: the same press in Manual moves the sign.
+    "Refresh All": dict(MOVING, Update=3, _press=60),
     # Refresh All kicks every disc the sweep reaches; on a still card with
     # Only Changes nothing moves once it has settled.
     "Only Changes": dict(MOVING),

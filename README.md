@@ -7,8 +7,8 @@
 > The wipe lands on the frame the scan rate says it should, even on Resolume's 499,000,000 ms
 > clock, Only Changes moves only the discs whose target differs, a sign with no update holds bit
 > for bit, the stuck discs are the fraction you asked for, and the colour face's width follows
-> the stated swing within its **1.1 px** tolerance (0.99 px at worst). Ten
-> negative controls, each of which must fail, all do, every one of the 19 controls is proven to
+> the stated swing within its **1.1 px** tolerance (0.99 px at worst). Twelve
+> negative controls, each of which must fail, all do, every one of the 20 controls is proven to
 > change the picture at both rasters, and the bundle registers, instantiates and lights pixels
 > under the fleet's oxbow host. On Windows it passes the fleet's Arena gate, 9 of 9, in Resolume
 > Arena 7.27.1 on software rendering. **It has never been loaded into Resolume on macOS.** The
@@ -107,13 +107,14 @@ animated by hand. The look falls out of the hardware.
   lines a second), Update (Continuous: the driver sweeps for ever against the
   live clip / Interval / Onset / Manual: each starts one pass over a latched
   picture), Interval, Only Changes (off: Refresh All, every disc pulsed),
-  Update Now, Audio (the host's spectrum, for Onset).
+  Update Now, Refresh All (one pass that pulses every disc, and lands any freed
+  by lowering Stuck), Audio (the host's spectrum, for Onset).
 - **Discs:** Flip Time (5 ms to 1 s to reach the far stop), Rebound (the
   stop's restitution, 0–0.6), Stuck (0–20 % of the discs), Late (0–50 % on a
   weak coil, 1.5 to 3 times slower).
 - **Look:** Dither (Threshold / Bayer 4x4 / Floyd-Steinberg), Threshold (the
-  luma that lights half the discs; black stays black), Light (from the viewer
-  to 80° from the left), Mix.
+  luma that lights half the discs; black stays black), Light Angle (from the
+  viewer to 80° from the left; called Light in 0.1.0), Mix.
 
 The defaults: a 64×36 sign of yellow discs filling a 16:9 frame, swept column by
 column at 240 a second and chasing the clip, only what changes pulsed, 40 ms a

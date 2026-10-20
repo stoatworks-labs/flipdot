@@ -16,7 +16,7 @@ parameter list.
   (untested; never run by this repo's own workflow)
 - Render a frame offline: `./build/fdtest --out f.png --size 1920x1080 --frames 120`
   (`--drift 2` walks the test card sideways so the sign has something to chase)
-- Set anything by name: `--set "Columns=96" --set "Dither=2" --set "Light=1"`
+- Set anything by name: `--set "Columns=96" --set "Dither=2" --set "Light Angle=1"`
   (options by index: Layout 0 Square, 1 Offset; Colour 0 Yellow, 1 Green,
   2 White; Scan 0 Column by Column, 1 Row by Row; Update 0 Continuous,
   1 Interval, 2 Onset, 3 Manual; Dither 0 Threshold, 1 Bayer 4x4,
@@ -35,9 +35,9 @@ parameter list.
   (or `$FLIPDOT_LOGS`).
 - **The checks, each read off the rendered picture at 640x360 and 320x180:**
   - `./build/fdtest --wipe` — line L of a whole-sign change lands on frame ceil(2.4 L + 6.5), exactly; by column, by row, and on Resolume's 499,000,000 ms clock
-  - `./build/fdtest --changes` — Only Changes moves exactly the discs whose target differs; Refresh All moves every disc and the unchanged ones come back bit-identical
+  - `./build/fdtest --changes` — Only Changes moves exactly the discs whose target differs; Refresh All (Only Changes off, or the button) moves every disc and the unchanged ones come back bit-identical
   - `./build/fdtest --bistable` — no update, no change: the settled sign bit-identical, with the clip frozen, inverted, or the driver sweeping it
-  - `./build/fdtest --stuck` — exactly round(f × N) discs never move, they are the seeded set, and 0.2's set holds 0.1's
+  - `./build/fdtest --stuck` — exactly round(f × N) discs never move, they are the seeded set, and 0.2's set holds 0.1's; lowered to 0, the freed discs hold through Update Now and Refresh All lands them
   - `./build/fdtest --rotation` — the colour face's width against 2r|cos θ| from the harness's own integration of the torques, within 1.1 px
   - `./build/fdtest --resize` — a picture resize mid-pass and a 16 → 32 column regrid keep every disc's side
   - `./build/fdtest --prime` — loud audio on frame one, and after a retrigger, fires nothing; a real onset fires

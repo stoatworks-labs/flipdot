@@ -117,6 +117,7 @@ private:
 	// Update decisions.
 	bool mFireThisFrame = false;
 	bool mUpdatePending = false;///< the Update Now event
+	bool mRefreshPending = false;///< the Refresh All event: forget, then a pass
 	double mNextTick    = -1.0; ///< Interval mode
 	int mLastUpdateMode = -1;
 
