@@ -17,7 +17,7 @@ are all that hardware doing its thing. Nobody animated them.
 plugin's offline harness from one of Resolume's bundled demo clips rather than captured from
 Resolume.*
 
-> **Before you rely on this:** this is **v0.1.0**, and it's still early days. The sign is measured
+> **Before you rely on this:** this is **v0.2.0**, and it's still early days. The sign is measured
 > rather than asserted, by a harness that drives the real plugin class and reads each claim back
 > out of the picture, at two rasters and on Apple's software renderer. After a whole-sign change
 > every disc of line L finishes its swing on frame ⌈2.4 L + 6.5⌉ exactly, column by column, row by

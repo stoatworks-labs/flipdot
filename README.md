@@ -124,7 +124,7 @@ threshold of 0.25 (the bundled demo clips are dark: their mean luma runs from
 
 ## Status
 
-**v0.1.0, released 2026-09-25, and still early days.** There's a user guide at
+**v0.2.0, released 2026-10-20, and still early days.** There's a user guide at
 [stoatworks-labs.com/software/flipdot/guide/](https://stoatworks-labs.com/software/flipdot/guide/).
 
 What I've verified, by measurement on this Mac (Apple Silicon, macOS 26.4), with
