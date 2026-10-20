@@ -39,14 +39,14 @@ rather than captured from Resolume.*
 
 ## Download
 
-**[v0.1.0](https://github.com/stoatworks-labs/flipdot/releases/tag/v0.1.0)** — prebuilt for macOS and Windows. Pick your platform:
+**[v0.2.0](https://github.com/stoatworks-labs/flipdot/releases/tag/v0.2.0)** — prebuilt for macOS and Windows. Pick your platform:
 
 <details>
 <summary><b>macOS</b> — Universal (Apple Silicon + Intel)</summary>
 
 | Build | Download | Size |
 | --- | --- | --- |
-| Universal (Apple Silicon + Intel) · .dmg disk image | [`flipdot-0.1.0-macos-universal.dmg`](https://github.com/stoatworks-labs/flipdot/releases/download/v0.1.0/flipdot-0.1.0-macos-universal.dmg) | 235 KB |
+| Universal (Apple Silicon + Intel) · .dmg disk image | [`flipdot-0.2.0-macos-universal.dmg`](https://github.com/stoatworks-labs/flipdot/releases/download/v0.2.0/flipdot-0.2.0-macos-universal.dmg) | 236 KB |
 | Universal (Apple Silicon + Intel) · .zip archive | [`flipdot-macos-universal.zip`](https://github.com/stoatworks-labs/flipdot/releases/latest/download/flipdot-macos-universal.zip) | 196 KB |
 
 </details>
@@ -56,7 +56,7 @@ rather than captured from Resolume.*
 
 | Build | Download | Size |
 | --- | --- | --- |
-| x64 · .exe installer | [`flipdot-0.1.0-windows-x86_64-setup.exe`](https://github.com/stoatworks-labs/flipdot/releases/download/v0.1.0/flipdot-0.1.0-windows-x86_64-setup.exe) | 228 KB |
+| x64 · .exe installer | [`flipdot-0.2.0-windows-x86_64-setup.exe`](https://github.com/stoatworks-labs/flipdot/releases/download/v0.2.0/flipdot-0.2.0-windows-x86_64-setup.exe) | 229 KB |
 | x64 · .zip archive | [`flipdot-windows-x86_64.zip`](https://github.com/stoatworks-labs/flipdot/releases/latest/download/flipdot-windows-x86_64.zip) | 121 KB |
 
 </details>
